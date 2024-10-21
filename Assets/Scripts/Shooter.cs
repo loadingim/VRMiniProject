@@ -9,22 +9,10 @@ public class Shooter : MonoBehaviour
     [SerializeField] Transform scopeTransform;
     [SerializeField] AudioSource bSound;
     [SerializeField] ParticleSystem muzzleFlash;
-    [SerializeField] float bombTime;
-    [SerializeField] bool buttonClick;
-    private Vector3 muzzlePoint;
-    [SerializeField] GameObject ballPrefab;
-
-    public void PointerDown()
-    {
-        buttonClick = true;
-    }
+    [SerializeField] GameObject bEffect;
 
     private void Update()
     {
-        if (buttonClick)
-        {
-            bombTime += 10f * Time.deltaTime;
-        }
         if (Physics.Raycast(scopeTransform.position, -scopeTransform.forward, out RaycastHit hit))
         {
             Debug.DrawRay(scopeTransform.position, -scopeTransform.forward * hit.distance, Color.red);
@@ -40,6 +28,8 @@ public class Shooter : MonoBehaviour
         if (Physics.Raycast(scopeTransform.position, -scopeTransform.forward, out RaycastHit hit))
         {
             Debug.DrawRay(scopeTransform.position, -scopeTransform.forward * hit.distance, Color.red);
+            GameObject hitBullet = GameObject.Instantiate(bEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            Destroy(hitBullet, 2f);
             Target target = hit.collider.GetComponent<Target>();
             if (target != null)
             {
@@ -48,7 +38,7 @@ public class Shooter : MonoBehaviour
         }
     }
 
-    public void Shoot()
+    /*public void Shoot()
     {
         muzzlePoint = Camera.main.transform.position;
         Debug.Log("클릭완료");
@@ -58,5 +48,5 @@ public class Shooter : MonoBehaviour
 
         buttonClick = false;
         bombTime = 0;
-    }
+    }*/
 }
