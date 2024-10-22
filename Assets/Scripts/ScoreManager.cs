@@ -50,7 +50,7 @@ public class ScoreManager : MonoBehaviour
         if (TargetSpawner.Instance.gameObject.tag == "BOMB")
         {
             bombScores.Add(nScore);
-            if (arbestScore == 0)
+            if (bombbestScore == 0)
             {
                 bombbestScore = nScore;
                 bombScore.text = $"BOMB BEST SCORE :{bombbestScore}";
