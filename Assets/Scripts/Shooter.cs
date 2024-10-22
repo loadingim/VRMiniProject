@@ -13,18 +13,14 @@ public class Shooter : MonoBehaviour
 
     private void Update()
     {
-        if (Physics.Raycast(scopeTransform.position, -scopeTransform.forward, out RaycastHit hit))
-        {
-            Debug.DrawRay(scopeTransform.position, -scopeTransform.forward * hit.distance, Color.red);
-         
-        }
+
     }
 
     public void Fire()
     {
         muzzleFlash.Play();
         bSound.Play();
-        Debug.Log("น฿ป็");
+
         if (Physics.Raycast(scopeTransform.position, -scopeTransform.forward, out RaycastHit hit))
         {
             Debug.DrawRay(scopeTransform.position, -scopeTransform.forward * hit.distance, Color.red);

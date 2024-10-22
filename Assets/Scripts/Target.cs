@@ -12,6 +12,12 @@ public class Target : MonoBehaviour
     private void OnDestroy()
     {
             TargetSpawner.Instance.targetCount--;
+
+        if(TargetSpawner.Instance.targetCount <= 0)
+        {
+            TargetSpawner.Instance.scoreTime = false;
+            ScoreManager.Instance.Clear(TargetSpawner.Instance.score);
+        }
     }
 
 }

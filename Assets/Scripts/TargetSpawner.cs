@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using static UnityEngine.GraphicsBuffer;
 
 public class TargetSpawner : MonoBehaviour
 {
@@ -10,9 +11,14 @@ public class TargetSpawner : MonoBehaviour
     public float targetCount;
     [SerializeField] float level;
     [SerializeField] GameObject targetPrefab;
-    public float targets;
+    public float targets, score;
     [SerializeField] bool canSpawn;
-    [SerializeField] GameObject gun, gunSpawn;
+    [SerializeField] GameObject gunPrefabs, gunSpawn, gun;
+    [SerializeField] GameObject bombPrefabs, bombSpawn, bomb;
+    public bool scoreTime;
+    [SerializeField] Transform bombSpawner, sniperSpawner, arSpawner;
+    [SerializeField] Target[] trashTarget;
+    //[SerializeField] GameObject sniperPrefabs, sniperSpawn, sniper;
 
     private void Awake()
     {
@@ -42,33 +48,108 @@ public class TargetSpawner : MonoBehaviour
         {
             canSpawn = true;
         }
+
+        if (scoreTime == true)
+        {
+            score += Time.deltaTime;
+        }
+    }
+
+    public void ResetButton()
+    {
+        StopCoroutine(targetSpawn);
+        trashTarget = FindObjectsOfType<Target>();
+
+        foreach (Target tTarget in trashTarget)
+        {
+            Destroy(tTarget.gameObject);
+        }
+        Destroy(gun);
+        Destroy(bomb);
+        
+        targetCount = 20;
+        canSpawn = true;
+        level = 1;
     }
 
     public void GunSpawn()
     {
-
+        Vector3 spawn = gunSpawn.transform.position;
+        if (gun == null)
+        {
+            gun = Instantiate(gunPrefabs, spawn, transform.rotation);
+        }
+        else
+        {
+            Destroy(gun);
+            gun = Instantiate(gunPrefabs, spawn, transform.rotation);
+        }
     }
+
+    public void BombSpawn()
+    {
+        Vector3 spawn = bombSpawn.transform.position;
+        if (bomb == null)
+        {
+            bomb = Instantiate(bombPrefabs, spawn, transform.rotation);
+        }
+        else
+        {
+            Destroy(bomb);
+            bomb = Instantiate(bombPrefabs, spawn, transform.rotation);
+        }
+    }
+
+ /*   public void SniperSpawn()
+    {
+        Vector3 spawn = sniperSpawn.transform.position;
+        if (sniper == null)
+        {
+            sniper = Instantiate(sniperPrefabs, spawn, transform.rotation);
+        }
+        else
+        {
+            Destroy(sniper);
+            sniper = Instantiate(sniperPrefabs, spawn, transform.rotation);
+        }
+    }*/
 
     #region ·¹º§
     public void Level1()
     {
-        targetCount = 20;
+        if (gameObject.tag == "AR")
+        {
+            targetCount = 30;
+        }
+
+        if (gameObject.tag == "BOMB")
+        {
+            targetCount = 5;
+        }
     }
     public void Level2()
     {
-        targetCount = 30;
+        if (gameObject.tag == "AR")
+        {
+            targetCount = 40;
+        }
+
+        if (gameObject.tag == "BOMB")
+        {
+            targetCount = 7;
+        }
     }
     public void Level3()
     {
-        targetCount = 40;
-    }
-    public void Level4()
-    {
-        targetCount = 50;
-    }
-    public void Level5()
-    {
-        targetCount = 60;
+        if (gameObject.tag == "AR")
+        {
+            targetCount = 50;
+        }
+
+        if (gameObject.tag == "BOMB")
+        {
+            targetCount = 9;
+        }
     }
     #endregion
 
@@ -80,18 +161,53 @@ public class TargetSpawner : MonoBehaviour
     }
     IEnumerator SpawnMonster()
     {
-        yield return new WaitForSeconds(5f);
-        canSpawn = false;
-
-        for (int i = 0; i < targetCount; i++)
+        if (gameObject.tag == "AR")
         {
-            Vector3 spawn = new Vector3(Random.Range(-9, 9f), Random.Range(2f, 5f), Random.Range(15f, 42f));
+            targets = targetCount;
+            gameObject.transform.position = arSpawner.position;
+            yield return new WaitForSeconds(5f);
+            canSpawn = false;
+            score = 0;
+            scoreTime = true;
+            for (int i = 0; i < targets; i++)
+            {
+                Vector3 spawn = new Vector3(Random.Range(-9, 9f), Random.Range(2f, 5f), Random.Range(15f, 42f));
 
-            Instantiate(targetPrefab, spawn, transform.rotation);
-            yield return new WaitForSeconds(Random.Range(0f, 2f));
+                Instantiate(targetPrefab, spawn, transform.rotation);
+                yield return new WaitForSeconds(Random.Range(0f, 2f));
+            }
         }
 
+        if (gameObject.tag == "BOMB")
+        {
+            targets = targetCount;
+            yield return new WaitForSeconds(5f);
+            canSpawn = false;
+            score = 0;
+            scoreTime = true;
+            for (int i = 0; i < targets; i++)
+            {
+                Vector3 spawn = new Vector3(Random.Range(10.5f, 19.5f), 1, Random.Range(15f, 42f));
+
+                Instantiate(targetPrefab, spawn, transform.rotation);
+            }
+        }
         yield break;
     }
     #endregion
+
+    public void ArTag()
+    {
+        gameObject.tag = "AR";
+    }
+
+    public void BombTag()
+    {
+        gameObject.tag = "BOMB";
+    }
+
+/*    public void SniperTag()
+    {
+        gameObject.tag = "SNIPER";
+    }*/
 }
