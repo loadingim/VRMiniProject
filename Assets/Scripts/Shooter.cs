@@ -37,16 +37,4 @@ public class Shooter : MonoBehaviour
             }
         }
     }
-
-    /*public void Shoot()
-    {
-        muzzlePoint = Camera.main.transform.position;
-        Debug.Log("클릭완료");
-        GameObject ball = Instantiate(ballPrefab, muzzlePoint, Camera.main.transform.rotation);
-        Rigidbody rigid = ball.GetComponent<Rigidbody>();
-        rigid.velocity = bombTime * Camera.main.transform.forward;
-
-        buttonClick = false;
-        bombTime = 0;
-    }*/
 }

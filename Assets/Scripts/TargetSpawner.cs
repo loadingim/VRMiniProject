@@ -5,12 +5,28 @@ using UnityEngine;
 
 public class TargetSpawner : MonoBehaviour
 {
+    public static TargetSpawner Instance { get; private set; }
     private Coroutine targetSpawn;
-    [SerializeField] float targetCount;
+    public float targetCount;
     [SerializeField] float level;
     [SerializeField] GameObject targetPrefab;
     public float targets;
     [SerializeField] bool canSpawn;
+    [SerializeField] GameObject gun, gunSpawn;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -22,34 +38,41 @@ public class TargetSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (targetCount <= 0)
         {
-            Debug.Log("실행");
             canSpawn = true;
-            level++;
-
-            switch (level)
-            {
-                case 1:
-                    targetCount = 20;
-                    break;
-                case 2:
-                    targetCount = 30;
-                    break;
-                case 3:
-                    targetCount = 40;
-                    break;
-                case 4:
-                    targetCount = 50;
-                    break;
-                default:
-                    break;
-            }
-
-            Spawn();
         }
     }
 
+    public void GunSpawn()
+    {
+
+    }
+
+    #region 레벨
+    public void Level1()
+    {
+        targetCount = 20;
+    }
+    public void Level2()
+    {
+        targetCount = 30;
+    }
+    public void Level3()
+    {
+        targetCount = 40;
+    }
+    public void Level4()
+    {
+        targetCount = 50;
+    }
+    public void Level5()
+    {
+        targetCount = 60;
+    }
+    #endregion
+
+    #region 스폰
     public void Spawn()
     {
         if (canSpawn == true)
@@ -57,8 +80,8 @@ public class TargetSpawner : MonoBehaviour
     }
     IEnumerator SpawnMonster()
     {
+        yield return new WaitForSeconds(5f);
         canSpawn = false;
-        targets = targetCount;
 
         for (int i = 0; i < targetCount; i++)
         {
@@ -70,4 +93,5 @@ public class TargetSpawner : MonoBehaviour
 
         yield break;
     }
+    #endregion
 }

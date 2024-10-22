@@ -8,4 +8,10 @@ public class Target : MonoBehaviour
     {
             Destroy(gameObject);
     }
+
+    private void OnDestroy()
+    {
+            TargetSpawner.Instance.targetCount--;
+    }
+
 }
